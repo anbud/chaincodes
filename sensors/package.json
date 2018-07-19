@@ -1,0 +1,17 @@
+{
+	"name": "sensors",
+	"version": "1.0.0",
+	"description": "NodeJS chaincode for storage of sensor data on a local blockchain.",
+	"engines": {
+		"node": ">=8.4.0",
+		"npm": ">=5.3.0"
+	},
+	"scripts": {
+		"start": "node sensors.js"
+	},
+	"engine-strict": true,
+	"license": "Apache-2.0",
+	"dependencies": {
+		"fabric-shim": "~1.1.0"
+	}
+}
