@@ -47,19 +47,16 @@ const Chaincode = class {
             throw new Error(`Expecting 1 param (gateway name), got ${args.length}.`)
         }
 
-        let sensors = [{
-            make: 'Test',
-            model: 'Test',
-            timestamp: new Date(),
+        await stub.putState(`Sensor0`, Buffer.from(JSON.stringify({
+            make: 'Dummy',
+            model: 'Dummy',
+            timestamp: new Date().getTime(),
             owner: args[0],
-            value: 'init'
-        }] // add other sensors for init here...
-    
-        sensors.forEach((i, ind) => {
-            i.type = 'sensor'
+            value: 'init',
+            type: 'sensor'
+        })))
 
-            await stub.putState(`Sensor${ind}`, Buffer.from(JSON.stringify(i)))
-        })
+        return shim.success()
     }
 
     async createSensor(stub, args) {
@@ -71,10 +68,12 @@ const Chaincode = class {
             type: 'sensor',
             make: args[2],
             model: args[3],
-            timestamp: new Date(),
+            timestamp: new Date().getTime(),
             owner: args[1],
             value: 'init'
         })))
+
+        return Buffer.from('OK')
     }
 
     async queryAllSensors(stub, args) {
@@ -113,9 +112,11 @@ const Chaincode = class {
         let sensor = JSON.parse(await stub.getState(args[0]))
         
         sensor.value = args[1]
-        sensor.timestamp = new Date() 
+        sensor.timestamp = new Date().getTime()
 
         await stub.putState(args[0], Buffer.from(JSON.stringify(sensor)))
+
+        return Buffer.from('OK')
     }
 }
 

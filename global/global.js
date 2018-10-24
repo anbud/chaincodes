@@ -26,6 +26,18 @@ const Chaincode = class {
         }
     }
 
+    async initLedger(stub, args) {
+        if (args.length != 2) {
+            throw new Error(`Expecting 2 params, got ${args.length}.`)
+        }
+        
+        await stub.putState(args[0], Buffer.from(JSON.stringify({
+            state: args[1]
+        })))
+
+        return shim.success()
+    }
+
     async insert(stub, args) {
         if (args.length != 2) {
             throw new Error(`Expecting 2 params, got ${args.length}.`)
@@ -35,7 +47,7 @@ const Chaincode = class {
             state: args[1]
         })))
         
-        return shim.success()
+        return Buffer.from('OK')
     }
 
     async delete(stub, args) {
@@ -43,12 +55,14 @@ const Chaincode = class {
             throw new Error(`Expecting 1 param, got ${args.length}.`)
         }
 
-        await stub.deleteState(args[0]);
+        await stub.deleteState(args[0])
+
+        return Buffer.from('OK')
     }
 
     async query(stub, args) {
         if (args.length != 1) {
-            throw new Error(`Expecting 1 param (gateway id), got ${args.length}.`)
+            throw new Error(`Expecting 1 param (network id), got ${args.length}.`)
         }
 
         let value = await stub.getState(args[0])
